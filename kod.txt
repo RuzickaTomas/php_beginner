@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="">
+    <title></title>
+</head>
+<body>
+<h1>Studing PHP</h1>
+<h1>TEST:</h1>
+<form action="formular.php" method="post">
+<input type="text" placeholder="Jméno" name="firstName" required/>
+<input type="text" placeholder="Příjmení" name="lastName" required/>
+<input type="date" placeholder="Datum narození" name="birthday" required pattern="\d{2}\.\d{2}\.\d{4}"/>
+<select placeholder="Zdravotní pojišťovna" name="healthInsurence" required>
+    <?php 
+        $arr = array(111 => "Všeobecná zdravotní pojišťovna ČR (VZP)", 
+                     201 => "Vojenská zdravotní pojišťovna ČR (VoZP)", 
+                     205 => "Česká průmyslová zdravotní pojišťovna (ČPZP)",
+                     207 => "Oborová zdravotní pojišťovna zam. bank, poj. a stav. (OZP)	",
+                     209 => "Zaměstnanecká pojišťovna Škoda (ZPŠ)	",
+                     211 => "Zdravotní pojišťovna ministerstva vnitra ČR (ZPMV)	",
+                     213 => "Revírní bratrská pokladna, zdrav. pojišťovna (RBP)	",
+                    );
+        foreach ($arr as $key => $value) {
+          echo "<option value=\"".$key."\">".$value."</option>";
+        }
+    ?>
+</select>
+<input type="text" placeholder="Telefon" name="phone"/>
+<input type="email" placeholder="E-mail" name="email" required/>
+<input type="submit" value="Prihlas" />
+<input type="reset" value="Zrus" />
+</form>
+<?php 
+    $birthday = new DateTime($_POST['birthday']);    
+    $interval = $birthday->diff(new DateTime('NOW'));
+    $period = $interval->y;
+    if ($period < 80) {
+        echo "Pro tuto věkovou kategorii není funkce podporována!";
+        return 0;
+    }
+    $phone = $_POST['phone'];
+    $phoneMatch = preg_match('/(\+420)?\d{9}/', $phone);
+    if ($phoneMatch == 0 || $phoneMatch == false) {
+        echo "Formát telefoního čísla není podporován!";
+        return 0;
+    }
+    echo "<ul>
+    <li>".$_POST['firstName']."</li>".
+    "<li>".$_POST['lastName']."</li>".
+    "<li>".$birthday->format('d.m.Y')."</li>".
+    "<li>".$arr[$_POST['healthInsurence']]."</li>".
+    "<li>".$phone."</li>".
+    "<li>".$_POST['email']."</li></ul>";
+?>
+</body>
+</html>
+
